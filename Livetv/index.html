@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RKDY IPTV – Mobile Friendly</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<!-- HLS + DASH -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.15"></script>
+<script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:system-ui,Arial;
+}
+
+/* HEADER */
+header{
+  padding:10px;
+  background:#0b0b0b;
+  text-align:center;
+  font-weight:600;
+  font-size:15px;
+}
+
+/* PLAYER */
+.player-wrap{
+  width:100%;
+  background:#000;
+}
+video{
+  width:100%;
+  max-height:42vh;
+  background:#000;
+}
+
+/* SEARCH + CATEGORY */
+#filters{
+  padding:8px;
+  background:#0e0e0e;
+}
+#search{
+  width:100%;
+  padding:10px;
+  font-size:15px;
+  background:#111;
+  color:#fff;
+  border:1px solid #333;
+  border-radius:6px;
+  margin-bottom:8px;
+}
+#category{
+  width:100%;
+  padding:8px;
+  font-size:14px;
+  background:#111;
+  color:#fff;
+  border:1px solid #333;
+  border-radius:6px;
+}
+
+/* STATUS */
+#status{
+  padding:6px 10px;
+  font-size:12px;
+  color:#00ff7f;
+}
+
+/* CHANNEL LIST */
+#channels{
+  height:calc(100vh - 42vh - 170px);
+  overflow-y:auto;
+}
+.channel{
+  padding:14px 12px;
+  border-bottom:1px solid #1e1e1e;
+}
+.channel:active{background:#111}
+.channel-name{font-size:15px}
+.channel-group{font-size:11px;color:#aaa}
+
+/* TELEGRAM FLOAT BUTTON */
+#telegram-btn{
+  position:fixed;
+  bottom:18px;
+  right:18px;
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:#229ED9;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  box-shadow:0 4px 12px rgba(0,0,0,0.5);
+  z-index:9999;
+}
+#telegram-btn img{
+  width:28px;
+  height:28px;
+}
+</style>
+</head>
+
+<body>
+
+<header>RKDY IPTV – Mobile Friendly</header>
+
+<div class="player-wrap">
+  <video
+    id="video"
+    controls
+    playsinline
+    poster="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg">
+  </video>
+</div>
+
+<div id="filters">
+  <input id="search" placeholder="Search channel">
+  <select id="category">
+    <option value="ALL">ALL</option>
+  </select>
+</div>
+
+<div id="status">Idle</div>
+<div id="channels">Loading…</div>
+
+<!-- TELEGRAM BUTTON -->
+<a id="telegram-btn" href="https://t.me/rkdyiptv" target="_blank">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg">
+</a>
+
+<script>
+const PLAYLIST =
+  "https://rkdyiptv.pages.dev/Playlist/Indian.m3u";
+
+const video = document.getElementById("video");
+const statusBox = document.getElementById("status");
+const list = document.getElementById("channels");
+const searchBox = document.getElementById("search");
+const categoryBox = document.getElementById("category");
+
+let hls=null, dash=null;
+let channels=[];
+
+/* RESET PLAYER */
+function resetPlayer(){
+  if(hls){hls.destroy();hls=null;}
+  if(dash){dash.reset();dash=null;}
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+}
+
+/* PLAY STREAM */
+async function playStream(url){
+  resetPlayer();
+  statusBox.textContent="Resolving…";
+
+  try{
+    const r = await fetch(
+      "api/stream.php?url=" + encodeURIComponent(url)
+    );
+    const j = await r.json();
+    if(!j.final){
+      statusBox.textContent="Resolve failed";
+      return;
+    }
+
+    const final = j.final.toLowerCase();
+    const type = (j.type||"").toLowerCase();
+
+    // DASH
+    if(final.endsWith(".mpd") || type.includes("dash")){
+      statusBox.textContent="Playing DASH…";
+      dash = dashjs.MediaPlayer().create();
+      dash.initialize(video, j.final, true);
+      return;
+    }
+
+    // HLS
+    statusBox.textContent="Playing HLS…";
+    if(Hls.isSupported()){
+      hls = new Hls();
+      hls.loadSource(j.final);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play());
+    }else{
+      video.src=j.final;
+      video.play();
+    }
+
+  }catch(e){
+    statusBox.textContent="Play error";
+  }
+}
+
+/* RENDER LIST */
+function render(){
+  const q = searchBox.value.toLowerCase();
+  const cat = categoryBox.value;
+
+  list.innerHTML="";
+  channels
+    .filter(c =>
+      (cat==="ALL" || c.group===cat) &&
+      c.name.toLowerCase().includes(q)
+    )
+    .forEach(c=>{
+      const d=document.createElement("div");
+      d.className="channel";
+      d.innerHTML=`
+        <div class="channel-name">${c.name}</div>
+        <div class="channel-group">${c.group}</div>
+      `;
+      d.onclick=()=>playStream(c.url);
+      list.appendChild(d);
+    });
+}
+
+/* LOAD PLAYLIST */
+fetch(PLAYLIST)
+.then(r=>r.text())
+.then(text=>{
+  let name="", group="General";
+  const cats=new Set();
+
+  text.split("\n").forEach(l=>{
+    l=l.trim();
+    if(l.startsWith("#EXTINF")){
+      name = l.split(",").pop();
+      const g = l.match(/group-title="([^"]+)"/);
+      group = g ? g[1] : "General";
+      cats.add(group);
+    }
+    else if(l.startsWith("http")){
+      channels.push({name,group,url:l});
+    }
+  });
+
+  cats.forEach(c=>{
+    const o=document.createElement("option");
+    o.value=c; o.textContent=c;
+    categoryBox.appendChild(o);
+  });
+
+  render();
+})
+.catch(()=>{
+  list.textContent="Playlist load failed";
+});
+
+/* EVENTS */
+searchBox.oninput = render;
+categoryBox.onchange = render;
+</script>
+
+</body>
+</html>
