@@ -1,3 +1,91 @@
-<script>
-!function(){var _0x5a9c=["https://vekna402las.com/","play","iframe","src","width","height","frameborder","allowfullscreen","IndStreamPlayer","innerHTML","appendChild","origin","event","init","error","message","addEventListener","attachEvent","submitBtn","imdbInput","value","trim","click","keypress","Enter","input-section","player-section","active"];function _0x2e3c(_0x3f4c){return _0x5a9c[_0x3f4c]}var _0x1d92=_0x2e3c(0),_0x4e7b="";window.initializePlayer=function(_0x33e9){_0x4e7b=_0x33e9;var _0x28a2={width:"100%",height:"100%",id:_0x2e3c(8),src:_0x33e9,tr:!1},_0x3b61=_0x28a2.tr!==!1&&_0x28a2.tr>0?"?tr="+parseInt(_0x28a2.tr):"",_0x57a9=document.createElement(_0x2e3c(2)),_0x1bfa=_0x1d92+"/"+_0x2e3c(1)+"/"+_0x28a2.src+_0x3b61,_0x3a61=!1,_0x46d2=function(){_0x57a9.setAttribute(_0x2e3c(3),_0x1bfa),_0x57a9.setAttribute(_0x2e3c(4),"1"),_0x57a9.setAttribute(_0x2e3c(5),"1"),_0x57a9.setAttribute(_0x2e3c(6),"0"),_0x57a9.setAttribute(_0x2e3c(7),_0x2e3c(7));var _0x11f8=document.getElementById(_0x28a2.id);_0x11f8?(_0x11f8[_0x2e3c(9)]="",_0x11f8[_0x2e3c(10)](_0x57a9)):setTimeout(_0x46d2,100)};function _0x39c2(_0x3a0e){_0x3a0e[_0x2e3c(11)]==_0x1d92&&!_0x3a61&&_0x3a0e.data&&_0x3a0e.data[_0x2e3c(12)]&&(_0x3a0e.data[_0x2e3c(12)]==_0x2e3c(13)?(_0x57a9.width="100%",_0x57a9.height="100%",_0x3a61=!0):_0x3a0e.data[_0x2e3c(12)]==_0x2e3c(14)&&alert("Error loading video"))}window[_0x2e3c(16)]?window[_0x2e3c(16)](_0x2e3c(15),_0x39c2):window[_0x2e3c(17)]("onmessage",_0x39c2),_0x46d2()},document.getElementById(_0x2e3c(18))[_0x2e3c(16)](_0x2e3c(22),function(){var _0x1c48=document.getElementById(_0x2e3c(19))[_0x2e3c(20)][_0x2e3c(21)]();_0x1c48?(document.querySelector("."+_0x2e3c(26)).style.display="none",document.querySelector("."+_0x2e3c(27)).classList.add(_0x2e3c(28)),initializePlayer(_0x1c48)):alert("Please enter a valid IMDB ID")}),document.getElementById(_0x2e3c(19))[_0x2e3c(16)](_0x2e3c(23),function(_0x4bb5){if(_0x4bb5.key===_0x2e3c(25)){var _0x2c3b=this[_0x2e3c(20)][_0x2e3c(21)]();_0x2c3b?(document.querySelector("."+_0x2e3c(26)).style.display="none",document.querySelector("."+_0x2e3c(27)).classList.add(_0x2e3c(28)),initializePlayer(_0x2c3b)):alert("Please enter a valid IMDB ID")}})}();
-</script>
+    
+        const AwsIndStreamDomain = 'https://vekna402las.com/';
+        let currentImdbId = '';
+
+        function initializePlayer(imdbId) {
+            currentImdbId = imdbId;
+            
+            const IndStreamPlayerConfigs = {
+                width: '100%',
+                height: '100%',
+                id: 'IndStreamPlayer',
+                src: imdbId,
+                tr: false
+            };
+
+            const AwsIndStreamIframeParamTr = IndStreamPlayerConfigs.tr !== false && IndStreamPlayerConfigs.tr > 0 ? '?tr=' + parseInt(IndStreamPlayerConfigs.tr) : '';
+            const AwsIndStreamPlayerIframe = document.createElement('iframe');
+            const AwsIndStreamIframeUrl = `${AwsIndStreamDomain}/play/${IndStreamPlayerConfigs.src}${AwsIndStreamIframeParamTr}`;
+            let initIndStreamPlayer = false;
+
+            const genAwsPlayer = () => {
+                AwsIndStreamPlayerIframe.setAttribute('src', AwsIndStreamIframeUrl);
+                AwsIndStreamPlayerIframe.setAttribute('width', '1');
+                AwsIndStreamPlayerIframe.setAttribute('height', '1');
+                AwsIndStreamPlayerIframe.setAttribute('frameborder', '0');
+                AwsIndStreamPlayerIframe.setAttribute('allowfullscreen', 'allowfullscreen');
+                
+                const AwsIndStreamPlayerContainer = document.getElementById(IndStreamPlayerConfigs.id);
+                
+                if (AwsIndStreamPlayerContainer != null) {
+                    // Clear existing content
+                    AwsIndStreamPlayerContainer.innerHTML = '';
+                    AwsIndStreamPlayerContainer.appendChild(AwsIndStreamPlayerIframe);
+                } else {
+                    setTimeout(genAwsPlayer, 100);
+                }
+            };
+
+            function listener(event) {
+                if ('origin' in event) {
+                    if (event.origin == AwsIndStreamDomain && !initIndStreamPlayer) {
+                        if ('event' in event.data) {
+                            if (event.data.event == 'init') {
+                                AwsIndStreamPlayerIframe.width = '100%';
+                                AwsIndStreamPlayerIframe.height = '100%';
+                                initIndStreamPlayer = true;
+                            } else if (event.data.event == 'error') {
+                                alert('Error loading video. Please check the IMDB ID.');
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (window.addEventListener) {
+                window.addEventListener("message", listener);
+            } else {
+                window.attachEvent("onmessage", listener);
+            }
+
+            genAwsPlayer();
+        }
+
+        // Submit button click handler
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            const imdbId = document.getElementById('imdbInput').value.trim();
+            if (imdbId) {
+                // Hide input section and show player section
+                document.querySelector('.input-section').style.display = 'none';
+                document.querySelector('.player-section').classList.add('active');
+                initializePlayer(imdbId);
+            } else {
+                alert('Please enter a valid IMDB ID');
+            }
+        });
+
+        // Enter key handler
+        document.getElementById('imdbInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const imdbId = document.getElementById('imdbInput').value.trim();
+                if (imdbId) {
+                    // Hide input section and show player section
+                    document.querySelector('.input-section').style.display = 'none';
+                    document.querySelector('.player-section').classList.add('active');
+                    initializePlayer(imdbId);
+                } else {
+                    alert('Please enter a valid IMDB ID');
+                }
+            }
+        });
+    
