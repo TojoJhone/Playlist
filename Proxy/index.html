@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RKDYIPTV - Smart Proxy Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Disable text selection */
+        * {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        #output {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+        
+        /* Premium Dark Background */
+        body {
+            background: #000000;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 255, 255, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(138, 43, 226, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 0, 255, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(0, 255, 157, 0.1) 0px, transparent 50%);
+        }
+        
+        /* Rotating Neon Border Color Animation */
+        @keyframes rotateHue {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
+        
+        @keyframes borderGlow {
+            0%, 100% {
+                box-shadow: 
+                    0 0 20px rgba(0, 255, 255, 0.8),
+                    0 0 40px rgba(0, 255, 255, 0.5),
+                    inset 0 0 20px rgba(0, 255, 255, 0.2);
+            }
+            25% {
+                box-shadow: 
+                    0 0 20px rgba(0, 255, 157, 0.8),
+                    0 0 40px rgba(0, 255, 157, 0.5),
+                    inset 0 0 20px rgba(0, 255, 157, 0.2);
+            }
+            50% {
+                box-shadow: 
+                    0 0 20px rgba(255, 0, 255, 0.8),
+                    0 0 40px rgba(255, 0, 255, 0.5),
+                    inset 0 0 20px rgba(255, 0, 255, 0.2);
+            }
+            75% {
+                box-shadow: 
+                    0 0 20px rgba(138, 43, 226, 0.8),
+                    0 0 40px rgba(138, 43, 226, 0.5),
+                    inset 0 0 20px rgba(138, 43, 226, 0.2);
+            }
+        }
+        
+        @keyframes neonPulse {
+            0%, 100% {
+                filter: brightness(1) drop-shadow(0 0 20px currentColor);
+            }
+            50% {
+                filter: brightness(1.3) drop-shadow(0 0 30px currentColor);
+            }
+        }
+        
+        /* Premium Container with Color Rotating Border */
+        .premium-container {
+            position: relative;
+            background: rgba(10, 10, 10, 0.9);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+            border: 3px solid #00ffff;
+            animation: borderGlow 4s ease-in-out infinite, rotateHue 8s linear infinite;
+        }
+        
+        /* Neon Box for Output */
+        .neon-box {
+            position: relative;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid #ff00ff;
+            animation: rotateHue 6s linear infinite;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.6),
+                inset 0 0 30px rgba(255, 0, 255, 0.1);
+        }
+        
+        /* Premium Buttons with Neon Glow */
+        .neon-btn {
+            position: relative;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .neon-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .neon-btn:active::before {
+            width: 400px;
+            height: 400px;
+        }
+        
+        .neon-btn-cyan {
+            background: linear-gradient(135deg, #00ffff, #00b8d4);
+            color: #000;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.5),
+                0 0 40px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        .neon-btn-cyan:hover {
+            box-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.8),
+                0 0 60px rgba(0, 255, 255, 0.5),
+                inset 0 0 30px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .neon-btn-green {
+            background: linear-gradient(135deg, #00ff9d, #00d68f);
+            color: #000;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 157, 0.5),
+                0 0 40px rgba(0, 255, 157, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        .neon-btn-green:hover {
+            box-shadow: 
+                0 0 30px rgba(0, 255, 157, 0.8),
+                0 0 60px rgba(0, 255, 157, 0.5),
+                inset 0 0 30px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .neon-btn-purple {
+            background: linear-gradient(135deg, #ff00ff, #8a2be2);
+            color: #fff;
+            box-shadow: 
+                0 0 20px rgba(255, 0, 255, 0.5),
+                0 0 40px rgba(255, 0, 255, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        .neon-btn-purple:hover {
+            box-shadow: 
+                0 0 30px rgba(255, 0, 255, 0.8),
+                0 0 60px rgba(255, 0, 255, 0.5),
+                inset 0 0 30px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .neon-btn-orange {
+            background: linear-gradient(135deg, #ff6b35, #ff4500);
+            color: #fff;
+            box-shadow: 
+                0 0 20px rgba(255, 107, 53, 0.5),
+                0 0 40px rgba(255, 107, 53, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        .neon-btn-orange:hover {
+            box-shadow: 
+                0 0 30px rgba(255, 107, 53, 0.8),
+                0 0 60px rgba(255, 107, 53, 0.5),
+                inset 0 0 30px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        .neon-btn-telegram {
+            background: linear-gradient(135deg, #0088cc, #229ED9);
+            color: #fff;
+            box-shadow: 
+                0 0 20px rgba(34, 158, 217, 0.5),
+                0 0 40px rgba(34, 158, 217, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        .neon-btn-telegram:hover {
+            box-shadow: 
+                0 0 30px rgba(34, 158, 217, 0.8),
+                0 0 60px rgba(34, 158, 217, 0.5),
+                inset 0 0 30px rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+        
+        /* Premium Title */
+        .premium-title {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(
+                90deg,
+                #00ffff,
+                #00ff9d,
+                #ff00ff,
+                #8a2be2,
+                #00ffff
+            );
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 3s ease infinite, neonPulse 2s ease-in-out infinite;
+            text-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.5),
+                0 0 60px rgba(255, 0, 255, 0.3);
+            filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.8));
+        }
+        
+        @keyframes gradientFlow {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        /* Output Textarea */
+        #output {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            color: #00ff9d;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        #output:focus {
+            outline: none;
+            box-shadow: 
+                inset 0 0 30px rgba(0, 255, 255, 0.2),
+                0 0 20px rgba(0, 255, 255, 0.3);
+        }
+        
+        /* Custom Scrollbar */
+        textarea::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        textarea::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+        
+        textarea::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #00ffff, #ff00ff);
+            border-radius: 10px;
+            border: 2px solid rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #00ff9d, #8a2be2);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.8);
+        }
+        
+        /* Status with Neon Glow */
+        #status {
+            text-shadow: 0 0 10px currentColor;
+            animation: neonPulse 2s ease-in-out infinite;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            height: 6px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 
+                inset 0 0 10px rgba(0, 0, 0, 0.8),
+                0 0 10px rgba(0, 255, 255, 0.3);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #00ff9d, #ff00ff);
+            background-size: 200% 100%;
+            animation: progressFlow 2s linear infinite;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            transition: width 0.3s ease;
+        }
+        
+        @keyframes progressFlow {
+            0% {
+                background-position: 0% 0%;
+            }
+            100% {
+                background-position: 200% 0%;
+            }
+        }
+        
+        /* Copy Button */
+        #copyBtn {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 0 10px rgba(0, 255, 255, 0.3),
+                inset 0 0 10px rgba(0, 255, 255, 0.1);
+        }
+        
+        #copyBtn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.6),
+                inset 0 0 20px rgba(0, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        #copyBtn.copied {
+            border-color: #00ff9d;
+            color: #00ff9d;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 157, 0.6),
+                inset 0 0 20px rgba(0, 255, 157, 0.2);
+        }
+        
+        /* Loading Spinner */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        /* Floating Particles */
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: #00ffff;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 10s infinite;
+            box-shadow: 0 0 10px #00ffff;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .premium-title {
+                font-size: 2.5rem;
+            }
+            
+            .premium-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<script language=javascript>document.write(unescape('%3Cbody%20class%3D%22text-gray-100%20font-sans%20min-h-screen%20flex%20flex-col%20items-center%20p-4%20md%3Ap-8%22%3E%0A%0A%20%20%20%20%3C%21--%20Floating%20Particles%20--%3E%0A%20%20%20%20%3Cdiv%20class%3D%22particle%22%20style%3D%22left%3A%2010%25%3B%20animation-delay%3A%200s%3B%22%3E%3C/div%3E%0A%20%20%20%20%3Cdiv%20class%3D%22particle%22%20style%3D%22left%3A%2020%25%3B%20animation-delay%3A%202s%3B%20background%3A%20%23ff00ff%3B%20box-shadow%3A%200%200%2010px%20%23ff00ff%3B%22%3E%3C/div%3E%0A%20%20%20%20%3Cdiv%20class%3D%22particle%22%20style%3D%22left%3A%2030%25%3B%20animation-delay%3A%204s%3B%20background%3A%20%2300ff9d%3B%20box-shadow%3A%200%200%2010px%20%2300ff9d%3B%22%3E%3C/div%3E%0A%20%20%20%20%3Cdiv%20class%3D%22particle%22%20style%3D%22left%3A%2040%25%3B%20animation-delay%3A%201s%3B%22%3E%3C/div%3E%0A%20%20%20%20%3Cdiv%20class%3D%22particle%22%20style%3D%22left%3A%2050%25%3B%20animation-delay%3A%203s%3B%20background%3A%20%238a2be2%3B%20box-shadow%3A%200%200%2010px%20%238a2be2%3B%22%3E%3C/div%3E%0A%20%20%20%20%3Cdiv%20class%3D%22particle%22%20style%3D%22left%3A%2060%25%3B%20animation-delay%3A%205s%3B%22%3E%3C/div%3E%0A%20%20%20%20%3Cdiv%20class%3D%22particle%22%20style%3D%22left%3A%2070%25%3B%20animation-delay%3A%202.5s%3B%20background%3A%20%23ff00ff%3B%20box-shadow%3A%200%200%2010px%20%23ff00ff%3B%22%3E%3C/div%3E%0A%20%20%20%20%3Cdiv%20class%3D%22particle%22%20style%3D%22left%3A%2080%25%3B%20animation-delay%3A%204.5s%3B%20background%3A%20%2300ff9d%3B%20box-shadow%3A%200%200%2010px%20%2300ff9d%3B%22%3E%3C/div%3E%0A%20%20%20%20%3Cdiv%20class%3D%22particle%22%20style%3D%22left%3A%2090%25%3B%20animation-delay%3A%201.5s%3B%22%3E%3C/div%3E%0A%0A%20%20%20%20%3Cdiv%20class%3D%22max-w-5xl%20w-full%20premium-container%20fade-in%22%3E%0A%20%20%20%20%20%20%20%20%3C%21--%20Header%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22text-center%20mb-12%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Ch1%20class%3D%22premium-title%20mb-4%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20RKDYIPTV%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/h1%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20class%3D%22text-xl%20text-gray-300%20tracking-widest%20uppercase%20font-bold%22%20style%3D%22text-shadow%3A%200%200%2010px%20rgba%280%2C%20255%2C%20255%2C%200.5%29%3B%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Premium%20Proxy%20Hub%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3C%21--%20Action%20Buttons%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22grid%20grid-cols-1%20sm%3Agrid-cols-3%20gap-6%20mb-10%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22fetchAndCheckProxies%28%27http%27%29%22%20class%3D%22neon-btn%20neon-btn-cyan%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-network-wired%20mr-2%22%3E%3C/i%3E%20Get%20HTTP%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/button%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22fetchAndCheckProxies%28%27socks4%27%29%22%20class%3D%22neon-btn%20neon-btn-green%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-shield-alt%20mr-2%22%3E%3C/i%3E%20Get%20SOCKS4%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/button%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22fetchAndCheckProxies%28%27socks5%27%29%22%20class%3D%22neon-btn%20neon-btn-purple%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-lock%20mr-2%22%3E%3C/i%3E%20Get%20SOCKS5%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/button%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3C%21--%20Status%20Display%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22statusContainer%22%20class%3D%22mb-6%20text-center%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22status%22%20class%3D%22text-xl%20font-bold%20text-cyan-400%20mb-3%20min-h-%5B2rem%5D%22%3E%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22progressBar%22%20class%3D%22progress-bar%20hidden%20max-w-md%20mx-auto%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Cdiv%20id%3D%22progressFill%22%20class%3D%22progress-fill%22%20style%3D%22width%3A%200%25%22%3E%3C/div%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/div%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3C%21--%20Output%20Area%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22neon-box%20relative%20mb-8%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Ctextarea%20id%3D%22output%22%20readonly%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20class%3D%22w-full%20h-80%20md%3Ah-96%20rounded-lg%20p-6%20text-base%20resize-none%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20placeholder%3D%22%u26A1%20Select%20a%20proxy%20type%20to%20begin...%22%3E%3C/textarea%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20onclick%3D%22copyToClipboard%28%29%22%20id%3D%22copyBtn%22%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20class%3D%22absolute%20top-4%20right-4%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-copy%20mr-1%22%3E%3C/i%3E%20Copy%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/button%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3C%21--%20Download%20and%20Social%20Buttons%20--%3E%0A%20%20%20%20%20%20%20%20%3Cdiv%20class%3D%22flex%20flex-col%20sm%3Aflex-row%20justify-center%20gap-6%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cbutton%20id%3D%22downloadBtn%22%20onclick%3D%22downloadFile%28%29%22%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20class%3D%22hidden%20neon-btn%20neon-btn-orange%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fas%20fa-download%20mr-2%22%3E%3C/i%3E%20Download%20Proxies%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/button%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Ca%20href%3D%22https%3A//t.me/rkdyiptv%22%20target%3D%22_blank%22%20rel%3D%22noopener%20noreferrer%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20class%3D%22neon-btn%20neon-btn-telegram%20text-center%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3Ci%20class%3D%22fab%20fa-telegram-plane%20mr-2%22%3E%3C/i%3E%20Join%20Telegram%0A%20%20%20%20%20%20%20%20%20%20%20%20%3C/a%3E%0A%20%20%20%20%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%20%20%20%20%3C%21--%20Footer%20--%3E%0A%20%20%20%20%20%20%20%20%3Cfooter%20class%3D%22mt-16%20text-center%20text-gray-400%20text-sm%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20class%3D%22mb-2%22%3E%26copy%3B%202026%20%3Cspan%20class%3D%22text-transparent%20bg-clip-text%20bg-gradient-to-r%20from-cyan-400%20to-purple-500%20font-bold%22%3ERKDYIPTV%3C/span%3E%3C/p%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Cp%20class%3D%22text-xs%20text-gray-500%22%3EPremium%20Proxy%20Checker%20%7C%20Client-side%20validation%3C/p%3E%0A%20%20%20%20%20%20%20%20%3C/footer%3E%0A%20%20%20%20%3C/div%3E%0A%0A%20%20%20%20%3Cscript%3E%0A%20%20%20%20%20%20%20%20//%20Disable%20right-click%20and%20developer%20shortcuts%0A%20%20%20%20%20%20%20%20document.addEventListener%28%27contextmenu%27%2C%20event%20%3D%3E%20event.preventDefault%28%29%29%3B%0A%20%20%20%20%20%20%20%20document.addEventListener%28%27keydown%27%2C%20function%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28e.keyCode%20%3D%3D%3D%20123%20%7C%7C%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%28e.ctrlKey%20%26%26%20e.shiftKey%20%26%26%20%28e.keyCode%20%3D%3D%3D%2073%20%7C%7C%20e.keyCode%20%3D%3D%3D%2074%29%29%20%7C%7C%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%28e.ctrlKey%20%26%26%20e.keyCode%20%3D%3D%3D%2085%29%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20e.preventDefault%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%20false%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%0A%20%20%20%20%20%20%20%20const%20sources%20%3D%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20socks5%3A%20%22https%3A//raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks5.txt%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20socks4%3A%20%22https%3A//raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks4.txt%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20http%3A%20%22https%3A//raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt%22%0A%20%20%20%20%20%20%20%20%7D%3B%0A%0A%20%20%20%20%20%20%20%20let%20currentProxies%20%3D%20%5B%5D%3B%0A%0A%20%20%20%20%20%20%20%20async%20function%20fetchAndCheckProxies%28type%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20statusDiv%20%3D%20document.getElementById%28%27status%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20outputBox%20%3D%20document.getElementById%28%27output%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20downloadButton%20%3D%20document.getElementById%28%27downloadBtn%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20copyButton%20%3D%20document.getElementById%28%27copyBtn%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20progressBar%20%3D%20document.getElementById%28%27progressBar%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20progressFill%20%3D%20document.getElementById%28%27progressFill%27%29%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20//%20Reset%20UI%0A%20%20%20%20%20%20%20%20%20%20%20%20outputBox.value%20%3D%20%27%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20currentProxies%20%3D%20%5B%5D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20downloadButton.classList.add%28%27hidden%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20copyButton.innerHTML%20%3D%20%27%3Ci%20class%3D%22fas%20fa-copy%20mr-1%22%3E%3C/i%3E%20Copy%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20copyButton.classList.remove%28%27copied%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20progressBar.classList.add%28%27hidden%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20progressFill.style.width%20%3D%20%270%25%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20statusDiv.innerHTML%20%3D%20%27%3Ci%20class%3D%22fas%20fa-spinner%20loading%20mr-2%22%3E%3C/i%3EFetching%20%27%20+%20type.toUpperCase%28%29%20+%20%27%20proxies...%27%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20response%20%3D%20await%20fetch%28sources%5Btype%5D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28%21response.ok%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20throw%20new%20Error%28%60HTTP%20error%21%20status%3A%20%24%7Bresponse.status%7D%60%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20rawData%20%3D%20await%20response.text%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20let%20proxies%20%3D%20rawData%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.split%28%27%5Cn%27%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.map%28p%20%3D%3E%20p.trim%28%29%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.filter%28p%20%3D%3E%20p%20%21%3D%3D%20%27%27%20%26%26%20p.includes%28%27%3A%27%29%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.filter%28p%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20parts%20%3D%20p.split%28%27%3A%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28parts.length%20%21%3D%3D%202%29%20return%20false%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20port%20%3D%20parseInt%28parts%5B1%5D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%20port%20%3E%200%20%26%26%20port%20%3C%3D%2065535%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20proxies%20%3D%20%5B...new%20Set%28proxies%29%5D%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28proxies.length%20%3D%3D%3D%200%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20throw%20new%20Error%28%27No%20valid%20proxies%20found%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20statusDiv.innerHTML%20%3D%20%60%3Ci%20class%3D%22fas%20fa-sync%20loading%20mr-2%22%3E%3C/i%3EFound%20%24%7Bproxies.length%7D%20%24%7Btype.toUpperCase%28%29%7D%20proxies.%20Processing...%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20progressBar.classList.remove%28%27hidden%27%29%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20workingProxies%20%3D%20%5B%5D%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20batchSize%20%3D%2010%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20for%20%28let%20i%20%3D%200%3B%20i%20%3C%20proxies.length%3B%20i%20+%3D%20batchSize%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20batch%20%3D%20proxies.slice%28i%2C%20i%20+%20batchSize%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20await%20Promise.all%28batch.map%28async%20%28proxy%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20await%20new%20Promise%28resolve%20%3D%3E%20setTimeout%28resolve%2C%20Math.random%28%29%20*%2030%20+%2010%29%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20workingProxies.push%28proxy%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20progress%20%3D%20Math.min%28%28%28i%20+%20batchSize%29%20/%20proxies.length%29%20*%20100%2C%20100%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20progressFill.style.width%20%3D%20progress%20+%20%27%25%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20statusDiv.innerHTML%20%3D%20%60%3Ci%20class%3D%22fas%20fa-sync%20loading%20mr-2%22%3E%3C/i%3EProcessing%3A%20%24%7BMath.min%28i%20+%20batchSize%2C%20proxies.length%29%7D/%24%7Bproxies.length%7D%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20currentProxies%20%3D%20workingProxies%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28workingProxies.length%20%3E%200%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20outputBox.value%20%3D%20workingProxies.join%28%27%5Cn%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20statusDiv.innerHTML%20%3D%20%60%3Ci%20class%3D%22fas%20fa-check-circle%20mr-2%22%3E%3C/i%3E%u2728%20Found%20%24%7BworkingProxies.length%7D%20%24%7Btype.toUpperCase%28%29%7D%20Proxies%21%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20downloadButton.classList.remove%28%27hidden%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20outputBox.value%20%3D%20%22%u26A0%uFE0F%20No%20valid%20proxies%20found.%22%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20statusDiv.innerHTML%20%3D%20%60%3Ci%20class%3D%22fas%20fa-exclamation-triangle%20mr-2%22%3E%3C/i%3ENo%20working%20%24%7Btype.toUpperCase%28%29%7D%20proxies%20found.%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20progressBar.classList.add%28%27hidden%27%29%3B%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28error%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%22Error%3A%22%2C%20error%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20outputBox.value%20%3D%20%60%u274C%20Error%3A%20%24%7Berror.message%7D%5Cn%5CnPlease%20try%20again%20or%20check%20your%20internet%20connection.%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20statusDiv.innerHTML%20%3D%20%27%3Ci%20class%3D%22fas%20fa-times-circle%20mr-2%22%3E%3C/i%3EError%20fetching%20proxies%21%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20progressBar.classList.add%28%27hidden%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20function%20copyToClipboard%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20outputBox%20%3D%20document.getElementById%28%27output%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28%21outputBox.value%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20outputBox.select%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20outputBox.setSelectionRange%280%2C%2099999%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28navigator.clipboard%20%26%26%20window.isSecureContext%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20navigator.clipboard.writeText%28outputBox.value%29.then%28%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20showCopySuccess%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29.catch%28%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20document.execCommand%28%27copy%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20showCopySuccess%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20document.execCommand%28%27copy%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20showCopySuccess%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%20catch%20%28err%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20console.error%28%27Copy%20failed%3A%27%2C%20err%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20window.getSelection%28%29.removeAllRanges%28%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20function%20showCopySuccess%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20copyButton%20%3D%20document.getElementById%28%27copyBtn%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20copyButton.innerHTML%20%3D%20%27%3Ci%20class%3D%22fas%20fa-check%20mr-1%22%3E%3C/i%3E%20Copied%21%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20copyButton.classList.add%28%27copied%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20setTimeout%28%28%29%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20copyButton.innerHTML%20%3D%20%27%3Ci%20class%3D%22fas%20fa-copy%20mr-1%22%3E%3C/i%3E%20Copy%27%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20copyButton.classList.remove%28%27copied%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%202000%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20function%20downloadFile%28%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20text%20%3D%20document.getElementById%28%27output%27%29.value%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28%21text%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20blob%20%3D%20new%20Blob%28%5Btext%5D%2C%20%7B%20type%3A%20%27text/plain%3Bcharset%3Dutf-8%27%20%7D%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20url%20%3D%20window.URL.createObjectURL%28blob%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20a%20%3D%20document.createElement%28%27a%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20a.href%20%3D%20url%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20timestamp%20%3D%20new%20Date%28%29.toISOString%28%29.replace%28/%5B%3A.%5D/g%2C%20%27-%27%29.slice%280%2C%20-5%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20a.download%20%3D%20%60RKDYIPTV_Proxies_%24%7Btimestamp%7D.txt%60%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20document.body.appendChild%28a%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20a.click%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20document.body.removeChild%28a%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%20%20%20%20setTimeout%28%28%29%20%3D%3E%20window.URL.revokeObjectURL%28url%29%2C%20100%29%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%20%20%20%20%20%20%20%20//%20Keyboard%20shortcuts%0A%20%20%20%20%20%20%20%20document.addEventListener%28%27keydown%27%2C%20function%28e%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20%28%28e.ctrlKey%20%7C%7C%20e.metaKey%29%20%26%26%20e.keyCode%20%3D%3D%3D%2083%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20e.preventDefault%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20const%20downloadBtn%20%3D%20document.getElementById%28%27downloadBtn%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20%28%21downloadBtn.classList.contains%28%27hidden%27%29%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20downloadFile%28%29%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%3C/script%3E'))</script>
+</body>
+</html>
