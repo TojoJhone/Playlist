@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You - RKDYIPTV</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#000;
+    padding:15px;
+}
+
+/* Neon rotating gradient */
+.neon-wrapper{
+    width:100%;
+    max-width:380px;
+    padding:3px;
+    border-radius:18px;
+    background: linear-gradient(
+        90deg,
+        #00fff7,
+        #ff00ff,
+        #00ff6a,
+        #ffb300,
+        #00fff7
+    );
+    background-size:500% 500%;
+    animation: neonMove 5s linear infinite;
+}
+
+@keyframes neonMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+/* Inner box */
+.box{
+    background:#0a0a0a;
+    border-radius:15px;
+    padding:28px 20px;
+    text-align:center;
+    color:#fff;
+}
+
+.box h1{
+    font-size:22px;
+    margin-bottom:8px;
+    animation: colorShift 3s infinite;
+}
+
+.box p{
+    font-size:14px;
+    opacity:0.9;
+    margin-bottom:18px;
+}
+
+.screenshot{
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:22px;
+    animation: colorShift 2.5s infinite;
+}
+
+/* Color changing animation */
+@keyframes colorShift{
+    0%{color:#00fff7;text-shadow:0 0 8px #00fff7;}
+    50%{color:#ff00ff;text-shadow:0 0 8px #ff00ff;}
+    100%{color:#00ff6a;text-shadow:0 0 8px #00ff6a;}
+}
+
+/* Telegram button */
+.tg-btn{
+    display:inline-block;
+    width:100%;
+    max-width:240px;
+    padding:13px 0;
+    border-radius:30px;
+    text-decoration:none;
+    font-size:15px;
+    font-weight:600;
+    color:#00fff7;
+    border:2px solid currentColor;
+    animation: colorShift 3s infinite;
+    transition:0.3s;
+}
+
+.tg-btn:active{
+    transform:scale(0.96);
+}
+</style>
+</head>
+
+<body>
+
+<div class="neon-wrapper">
+    <div class="box">
+        <h1>Thank You ❤️</h1>
+        <p>Thank you for using <b>RKDYIPTV</b></p>
+
+        <div class="screenshot">
+            SEND SCREENSHOT 👇👇
+        </div>
+
+        <a href="https://t.me/rkdyhelp1_bot" class="tg-btn" target="_blank">
+            Contact Support
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
