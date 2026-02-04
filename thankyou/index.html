@@ -10,34 +10,30 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont;
+    font-family: system-ui, -apple-system;
 }
 
 body{
     min-height:100vh;
+    background:#000;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:#000;
     padding:15px;
 }
 
-/* Neon rotating gradient */
+/* Outer neon border */
 .neon-wrapper{
     width:100%;
-    max-width:380px;
+    max-width:390px;
     padding:3px;
     border-radius:18px;
-    background: linear-gradient(
+    background:linear-gradient(
         90deg,
-        #00fff7,
-        #ff00ff,
-        #00ff6a,
-        #ffb300,
-        #00fff7
+        #00fff7,#ff00ff,#00ff6a,#ffb300,#00fff7
     );
     background-size:500% 500%;
-    animation: neonMove 5s linear infinite;
+    animation:neonMove 5s linear infinite;
 }
 
 @keyframes neonMove{
@@ -46,59 +42,81 @@ body{
     100%{background-position:0% 50%;}
 }
 
-/* Inner box */
-.box{
-    background:#0a0a0a;
+.container{
+    background:#0b0b0b;
     border-radius:15px;
-    padding:28px 20px;
-    text-align:center;
+    padding:20px;
     color:#fff;
 }
 
-.box h1{
-    font-size:22px;
-    margin-bottom:8px;
-    animation: colorShift 3s infinite;
-}
-
-.box p{
-    font-size:14px;
-    opacity:0.9;
-    margin-bottom:18px;
-}
-
-.screenshot{
-    font-size:13px;
-    font-weight:600;
-    margin-bottom:22px;
-    animation: colorShift 2.5s infinite;
-}
-
-/* Color changing animation */
+/* Title color animation */
 @keyframes colorShift{
-    0%{color:#00fff7;text-shadow:0 0 8px #00fff7;}
-    50%{color:#ff00ff;text-shadow:0 0 8px #ff00ff;}
-    100%{color:#00ff6a;text-shadow:0 0 8px #00ff6a;}
+    0%{color:#00fff7;}
+    50%{color:#ff00ff;}
+    100%{color:#00ff6a;}
 }
 
-/* Telegram button */
+h1{
+    text-align:center;
+    font-size:22px;
+    animation:colorShift 3s infinite;
+}
+
+p{
+    text-align:center;
+    font-size:14px;
+    margin:8px 0 15px;
+    opacity:.9;
+}
+
+.screenshot-text{
+    text-align:center;
+    font-weight:600;
+    animation:colorShift 2.5s infinite;
+    margin-bottom:15px;
+}
+
+/* Telegram Button */
 .tg-btn{
-    display:inline-block;
+    display:block;
     width:100%;
     max-width:240px;
+    margin:0 auto 25px;
     padding:13px 0;
-    border-radius:30px;
+    text-align:center;
     text-decoration:none;
-    font-size:15px;
+    border-radius:30px;
     font-weight:600;
-    color:#00fff7;
     border:2px solid currentColor;
-    animation: colorShift 3s infinite;
-    transition:0.3s;
+    animation:colorShift 3s infinite;
 }
 
-.tg-btn:active{
-    transform:scale(0.96);
+/* Example Box */
+.example-box{
+    border:2px dashed #444;
+    border-radius:12px;
+    padding:12px;
+    margin-top:10px;
+}
+
+.example-title{
+    text-align:center;
+    font-size:14px;
+    margin-bottom:8px;
+    color:#ffb300;
+}
+
+.example-box img{
+    width:100%;
+    border-radius:10px;
+    display:block;
+}
+
+.example-note{
+    text-align:center;
+    font-size:12px;
+    margin-top:8px;
+    opacity:.85;
 }
 </style>
 </head>
@@ -106,25 +124,38 @@ body{
 <body>
 
 <div class="neon-wrapper">
-    <div class="box">
-        <h1>Thank You ❤️</h1>
-        <p>Thank you for using <b>RKDYIPTV</b></p>
+<div class="container">
 
-        <div class="screenshot">
-            SEND SCREENSHOT 👇👇
+    <!-- MAIN THANK YOU -->
+    <h1>Thank You ❤️</h1>
+    <p>Thank you for using <b>RKDYIPTV</b></p>
+
+    <div class="screenshot-text">
+        SEND SCREENSHOT 👇👇
+    </div>
+
+    <a href="https://t.me/rkdyhelp1_bot" target="_blank" class="tg-btn">
+        Contact Support
+    </a>
+
+    <!-- SCREENSHOT EXAMPLE BOX -->
+    <div class="example-box">
+        <div class="example-title">
+            Screenshot Example
         </div>
 
-        <a href="https://t.me/rkdyhelp1_bot" class="tg-btn" target="_blank">
-            Contact Support
-        </a>
-    </div>
-</div>
-<meta http-equiv="refresh" content="60;url=https://t.me/rkdyiptv">
+        <!-- CHANGE IMAGE URL HERE -->
+        <img src="https://i.ibb.co/wNgH2Yr9/IMG-20260204-225419-222.jpg" alt="Screenshot Example">
 
-  <script>
-    setTimeout(function () {
-      window.location.href = "https://t.me/rkdyiptv";
-    }, 60000); // 60000 ms = 1 minute
-  </script>
+<img src="https://i.ibb.co/5qnmy9Q/IMG-20260204-225421-909.jpg" alt="Screenshot Example">
+
+        <div class="example-note">
+            Take screenshot like this and send to support
+        </div>
+    </div>
+
+</div>
+</div>
+
 </body>
 </html>
