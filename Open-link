@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You - RKDYIPTV</title>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: system-ui, -apple-system;
+}
+body{
+    min-height:100vh;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:15px;
+    overflow:hidden;
+    position:relative;
+}
+
+/* Animated Background Particles */
+.particle{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:#00fff7;
+    border-radius:50%;
+    animation:float 8s infinite;
+    opacity:0.6;
+}
+@keyframes float{
+    0%,100%{transform:translateY(0) translateX(0);}
+    50%{transform:translateY(-100vh) translateX(50px);}
+}
+
+/* Outer neon border with glow */
+.neon-wrapper{
+    width:100%;
+    max-width:390px;
+    padding:3px;
+    border-radius:20px;
+    background:linear-gradient(
+        90deg,
+        #00fff7,#ff00ff,#00ff6a,#ffb300,#00fff7
+    );
+    background-size:500% 500%;
+    animation:neonMove 5s linear infinite;
+    box-shadow:0 0 20px rgba(0,255,247,0.5),
+               0 0 40px rgba(255,0,255,0.3);
+    position:relative;
+    z-index:10;
+}
+@keyframes neonMove{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.container{
+    background:linear-gradient(135deg, #0b0b0b 0%, #1a1a1a 100%);
+    border-radius:18px;
+    padding:25px 20px;
+    color:#fff;
+    position:relative;
+}
+
+/* Floating hearts animation */
+.heart{
+    position:absolute;
+    font-size:20px;
+    animation:heartFloat 6s infinite;
+    opacity:0;
+}
+@keyframes heartFloat{
+    0%{
+        transform:translateY(0) scale(0);
+        opacity:0;
+    }
+    50%{
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-300px) scale(1.5);
+        opacity:0;
+    }
+}
+
+/* Title with glow effect */
+h1{
+    text-align:center;
+    font-size:26px;
+    animation:colorShift 3s infinite, pulse 2s infinite;
+    text-shadow:0 0 10px currentColor,
+                0 0 20px currentColor,
+                0 0 30px currentColor;
+    margin-bottom:5px;
+}
+@keyframes colorShift{
+    0%{color:#00fff7;}
+    33%{color:#ff00ff;}
+    66%{color:#00ff6a;}
+    100%{color:#00fff7;}
+}
+@keyframes pulse{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.05);}
+}
+
+/* Subtitle with wave effect */
+.subtitle{
+    text-align:center;
+    font-size:15px;
+    font-weight:600;
+    background:linear-gradient(90deg,#00fff7,#ff00ff,#00ff6a,#ffb300);
+    background-size:300% 300%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    animation:gradient 4s ease infinite;
+    margin-bottom:10px;
+}
+@keyframes gradient{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+p{
+    text-align:center;
+    font-size:14px;
+    margin:8px 0 20px;
+    opacity:.9;
+    line-height:1.6;
+}
+
+/* Button wrapper for rotating neon border */
+.button-wrapper{
+    position:relative;
+    width:100%;
+    max-width:260px;
+    margin:0 auto 18px;
+    padding:3px;
+    border-radius:50px;
+    background:linear-gradient(
+        90deg,
+        #00fff7,#ff00ff,#00ff6a,#ffb300,#ff0080,#00fff7
+    );
+    background-size:400% 400%;
+    animation:borderRotate 3s linear infinite, buttonPulse 1.5s ease-in-out infinite;
+}
+@keyframes borderRotate{
+    0%{background-position:0% 50%;}
+    100%{background-position:400% 50%;}
+}
+@keyframes buttonPulse{
+    0%,100%{
+        transform:scale(1);
+        box-shadow:0 0 15px rgba(0,255,247,0.4);
+    }
+    50%{
+        transform:scale(1.05);
+        box-shadow:0 0 30px rgba(0,255,247,0.6),
+                   0 0 50px rgba(255,0,255,0.4);
+    }
+}
+
+/* Main button style with neon gradient background */
+.tg-btn{
+    display:block;
+    width:100%;
+    padding:15px 0;
+    text-align:center;
+    text-decoration:none;
+    border-radius:50px;
+    font-weight:700;
+    font-size:16px;
+    border:none;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    transition:all 0.3s ease;
+    background:linear-gradient(
+        135deg,
+        rgba(0,255,247,0.3),
+        rgba(255,0,255,0.3),
+        rgba(0,255,106,0.3)
+    );
+    background-size:200% 200%;
+    animation:bgShift 3s ease infinite;
+    text-shadow:0 0 10px rgba(255,255,255,0.8);
+}
+@keyframes bgShift{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+.tg-btn:before{
+    content:'';
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:0;
+    height:0;
+    border-radius:50%;
+    background:rgba(255,255,255,0.3);
+    transform:translate(-50%,-50%);
+    transition:width 0.6s, height 0.6s;
+}
+.tg-btn:hover:before{
+    width:300px;
+    height:300px;
+}
+.tg-btn:hover{
+    transform:translateY(-2px);
+}
+.tg-btn:active{
+    transform:translateY(0) scale(0.98);
+}
+
+/* Telegram button specific style */
+.tg-btn.telegram{
+    background:linear-gradient(
+        135deg,
+        rgba(0,136,204,0.8),
+        rgba(0,170,255,0.8),
+        rgba(0,136,204,0.8)
+    );
+    background-size:200% 200%;
+    animation:bgShift 3s ease infinite;
+}
+
+/* Telegram logo */
+.tg-logo{
+    display:inline-block;
+    width:22px;
+    height:22px;
+    vertical-align:middle;
+    margin-right:8px;
+}
+
+/* Loading animation */
+.loading-bar{
+    width:100%;
+    height:3px;
+    background:rgba(255,255,255,0.1);
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:20px;
+}
+.loading-progress{
+    width:0%;
+    height:100%;
+    background:linear-gradient(90deg,#00fff7,#ff00ff,#00ff6a);
+    animation:loading 3s infinite;
+}
+@keyframes loading{
+    0%{width:0%;}
+    100%{width:100%;}
+}
+
+/* Sparkle effect */
+.sparkle{
+    position:absolute;
+    width:4px;
+    height:4px;
+    background:#fff;
+    border-radius:50%;
+    animation:sparkle 2s infinite;
+}
+@keyframes sparkle{
+    0%,100%{opacity:0; transform:scale(0);}
+    50%{opacity:1; transform:scale(1);}
+}
+
+/* Footer text */
+.footer-text{
+    text-align:center;
+    font-size:11px;
+    margin-top:15px;
+    opacity:0.6;
+    animation:fadeInOut 3s infinite;
+}
+@keyframes fadeInOut{
+    0%,100%{opacity:0.6;}
+    50%{opacity:1;}
+}
+</style>
+</head>
+<body>
+
+<!-- Background particles -->
+<script>
+for(let i=0; i<30; i++){
+    let particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random()*100 + '%';
+    particle.style.animationDelay = Math.random()*8 + 's';
+    particle.style.animationDuration = (Math.random()*5 + 5) + 's';
+    document.body.appendChild(particle);
+}
+</script>
+
+<div class="neon-wrapper">
+<div class="container">
+    <!-- Floating hearts -->
+    <div class="heart" style="left:10%; animation-delay:0s;">❤️</div>
+    <div class="heart" style="left:30%; animation-delay:2s;">💖</div>
+    <div class="heart" style="left:50%; animation-delay:4s;">❤️</div>
+    <div class="heart" style="left:70%; animation-delay:1s;">💖</div>
+    <div class="heart" style="left:90%; animation-delay:3s;">❤️</div>
+    
+    <!-- Sparkles -->
+    <div class="sparkle" style="top:20px; left:20px; animation-delay:0s;"></div>
+    <div class="sparkle" style="top:40px; right:30px; animation-delay:1s;"></div>
+    <div class="sparkle" style="bottom:60px; left:40px; animation-delay:0.5s;"></div>
+    <div class="sparkle" style="bottom:30px; right:20px; animation-delay:1.5s;"></div>
+    
+    <!-- MAIN THANK YOU -->
+    <h1>✨ Thank You ✨</h1>
+    <div class="subtitle">THANK YOU FOR USING RKDYIPTV</div>
+    <p>
+        <b>🔥 PREMIUM IPTV SERVICE 🔥</b>
+        <br>
+        <b style="color:#00ff6a;">OPEN LINKS BELOW</b> 🔗 👇
+    </p>
+    
+    <!-- Main Link Button with rotating border -->
+    <div class="button-wrapper">
+        <a href="https://vplink.in/yupptv" target="_blank" class="tg-btn">
+            ❤️ CLICK HERE ❤️
+        </a>
+    </div>
+    
+    <!-- Telegram Button with rotating border and pulse -->
+    <div class="button-wrapper">
+        <a href="https://t.me/rkdyiptv" target="_blank" class="tg-btn telegram">
+            <svg class="tg-logo" viewBox="0 0 24 24" fill="white">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+            </svg>
+            Join Telegram
+        </a>
+    </div>
+    
+    <!-- Loading bar animation -->
+    <div class="loading-bar">
+        <div class="loading-progress"></div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer-text">
+        ⚡ Premium Quality • 24/7 Support ⚡
+    </div>
+</div>
+</div>
+
+<script>
+// Disable right-click
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+document.addEventListener('keydown', function(e) {
+    if(e.keyCode == 123 || 
+       (e.ctrlKey && e.shiftKey && e.keyCode == 73) ||
+       (e.ctrlKey && e.shiftKey && e.keyCode == 74) ||
+       (e.ctrlKey && e.keyCode == 85)) {
+        e.preventDefault();
+        return false;
+    }
+});
+
+// Disable text selection
+document.addEventListener('selectstart', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// Disable copy
+document.addEventListener('copy', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+// Create random sparkles
+setInterval(function(){
+    let sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.style.left = Math.random()*100 + '%';
+    sparkle.style.top = Math.random()*100 + '%';
+    document.querySelector('.container').appendChild(sparkle);
+    setTimeout(()=>sparkle.remove(), 2000);
+}, 1000);
+</script>
+  
+</body>
+</html>
