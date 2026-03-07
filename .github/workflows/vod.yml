@@ -14,7 +14,7 @@ jobs:
 
       - name: Generate MOVIES playlist
         run: |
-          mkdir -p Playlist/VOD
+          mkdir -p Playlist/Geo-plus
 
           HTML_FILE=html.txt
           HEADER_FILE=header.m3u
@@ -46,7 +46,7 @@ jobs:
           ' $TEMP_FILE > $BODY_FILE
 
           # Combine HTML + playlist
-          cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/VOD/index.html
+          cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/Geo-plus/index.html
 
           rm -f $HTML_FILE $HEADER_FILE $BODY_FILE $TEMP_FILE
 
