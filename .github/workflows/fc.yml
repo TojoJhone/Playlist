@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Generate playlist
         run: |
@@ -22,7 +24,7 @@ jobs:
           BODY_FILE=body.m3u
           TEMP_FILE=temp.m3u
 
-          # Browser redirect (IPTV apps ignore JS)
+          # Browser redirect
           echo '<!DOCTYPE html>' > $HTML_FILE
           echo '<html>' >> $HTML_FILE
           echo '<script>' >> $HTML_FILE
@@ -33,18 +35,18 @@ jobs:
           echo '</script>' >> $HTML_FILE
           echo '</html>' >> $HTML_FILE
 
-          # Playlist header + credit
+          # Playlist header
           echo '#EXTM3U' > $HEADER_FILE
           echo '# Credit: RKDYIPTV' >> $HEADER_FILE
           echo "#Updated $(date)" >> $HEADER_FILE
 
-          # Fetch original playlist
+          # Fetch playlist
           curl -L -s -o $TEMP_FILE "https://github.com/jitendra-unatti/fancode/raw/refs/heads/main/data/fancode.m3u"
 
           # Remove original header
           grep -v '^#EXTM3U' $TEMP_FILE > $BODY_FILE || true
 
-          # Combine HTML + playlist
+          # Combine
           cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/fc.m3u/index.html
 
           rm -f $HTML_FILE $HEADER_FILE $BODY_FILE $TEMP_FILE
@@ -57,6 +59,6 @@ jobs:
           git commit -m "Auto update RKDYIPTV Fancode playlist" || echo "No changes"
 
       - name: Push
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git pull --rebase origin main
+          git push origin main
