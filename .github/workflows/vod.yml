@@ -1,0 +1,62 @@
+name: Extract VOD Playlist
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  vod-playlist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate VOD playlist
+        run: |
+          mkdir -p Playlist/VOD
+
+          HTML_FILE=html.txt
+          HEADER_FILE=header.m3u
+          BODY_FILE=body.m3u
+          TEMP_FILE=temp.m3u
+
+          # Browser redirect
+          echo '<!DOCTYPE html>' > $HTML_FILE
+          echo '<html>' >> $HTML_FILE
+          echo '<script>' >> $HTML_FILE
+          echo 'var ua = navigator.userAgent.toLowerCase();' >> $HTML_FILE
+          echo 'if (ua.includes("mozilla") || ua.includes("chrome") || ua.includes("safari") || ua.includes("firefox")) {' >> $HTML_FILE
+          echo 'window.location.href="https://telegram.me/rkdyiptv";' >> $HTML_FILE
+          echo '}' >> $HTML_FILE
+          echo '</script>' >> $HTML_FILE
+          echo '</html>' >> $HTML_FILE
+
+          # Playlist header
+          echo '#EXTM3U' > $HEADER_FILE
+          echo '# Credit: RKDYIPTV' >> $HEADER_FILE
+
+          # Fetch source playlist
+          curl -L -s -o $TEMP_FILE "https://raw.githubusercontent.com/etcvai/ExtenderMax/refs/heads/main/iptv.m3u8"
+
+          # Extract VOD / Movies / Series
+          awk '
+          /group-title="Movies"|group-title="VOD"|group-title="Series"/ {print; getline; print}
+          ' $TEMP_FILE > $BODY_FILE
+
+          # Combine HTML + playlist
+          cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/VOD/index.html
+
+          rm -f $HTML_FILE $HEADER_FILE $BODY_FILE $TEMP_FILE
+
+      - name: Commit
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add Playlist/VOD/index.html
+          git commit -m "Update VOD playlist RKDYIPTV" || echo "No changes"
+
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
