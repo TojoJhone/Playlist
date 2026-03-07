@@ -1,8 +1,8 @@
-name: Update Jio (__hdnea__) playlist
+name: Update Geo-plus Selected Playlist
 
 on:
   schedule:
-    - cron: "0 */1 * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,10 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Fetch playlist
+      - name: Generate playlist
         run: |
           mkdir -p Playlist/Geo-plus
 
@@ -22,7 +21,7 @@ jobs:
           BODY_FILE=body.m3u
           TEMP_FILE=temp.m3u
 
-          # Browser redirect HTML
+          # Browser redirect
           echo '<!DOCTYPE html>' > $HTML_FILE
           echo '<html>' >> $HTML_FILE
           echo '<script>' >> $HTML_FILE
@@ -33,18 +32,28 @@ jobs:
           echo '</script>' >> $HTML_FILE
           echo '</html>' >> $HTML_FILE
 
-          # Playlist header + credit
-          echo '#EXTM3U x-tvg-url="https://fakeall12398-sketch.github.io/JIO_TV/jio_epg.xml.gz"' > $HEADER_FILE
-          echo '# RKDYIPTV Playlist - Auto Updated' >> $HEADER_FILE
-          echo "#Generated on $(date +%s)" >> $HEADER_FILE
+          # Playlist header
+          echo '#EXTM3U' > $HEADER_FILE
+          echo '# Credit: RKDYIPTV' >> $HEADER_FILE
+          echo "#Updated $(date)" >> $HEADER_FILE
 
-          # Fetch original playlist
-          curl -L -s -o $TEMP_FILE "https://livetv-cb7.pages.dev/hotstar"
+          # Fetch source playlist
+          curl -L -s -o $TEMP_FILE "https://raw.githubusercontent.com/etcvai/ExtenderMax/refs/heads/main/iptv.m3u8"
 
-          # Remove original headers
-          grep -vE '^#EXTM3U|^#Generated on' $TEMP_FILE > $BODY_FILE || true
+          # Extract selected categories
+          awk '
+          /group-title="JIO TV"|group-title="JIOTV\+ \( IND IP\)"|group-title="BALL FTP"|group-title="BDxtv"|group-title="CRICHD"|group-title="SUN NXT"|group-title="ZEE5 LITE"/ {
+              print
+              getline
+              print
+          }
+          ' $TEMP_FILE > $BODY_FILE
 
-          # Combine HTML + playlist
+          # Replace group titles
+          sed -i 's/group-title="BALL FTP"/group-title="RKDYIPTV"/g' $BODY_FILE
+          sed -i 's/group-title="BDxtv"/group-title="RKDYIPTV"/g' $BODY_FILE
+
+          # Combine redirect + playlist
           cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/Geo-plus/index.html
 
           rm -f $HTML_FILE $HEADER_FILE $BODY_FILE $TEMP_FILE
@@ -54,7 +63,7 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add Playlist/Geo-plus/index.html
-          git commit -m "Auto update RKDYIPTV playlist" || echo "No changes"
+          git commit -m "Update Geo-plus playlist RKDYIPTV" || echo "No changes"
 
       - name: Push
         uses: ad-m/github-push-action@master
