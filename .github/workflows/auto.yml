@@ -42,16 +42,21 @@ jobs:
 
           # Extract selected categories
           awk '
-          /group-title="JIO TV"|group-title="JIOTV\+ \( IND IP\)"|group-title="BALL FTP"|group-title="BDxtv"|group-title="CRICHD"|group-title="SUN NXT"|group-title="ZEE5 LITE"/ {
+          BEGIN{IGNORECASE=1}
+          /group-title="JIO TV"|group-title="JIOTV\+ \(IND IP\)"|group-title="BALL FTP"|group-title="BDXTV"|group-title="CRICHD"|group-title="SUN NXT"|group-title="ZEE5 LITE"/ {
               print
               getline
               print
           }
           ' $TEMP_FILE > $BODY_FILE
 
-          # Replace group titles
-          sed -i 's/group-title="BALL FTP"/group-title="RKDYIPTV"/g' $BODY_FILE
-          sed -i 's/group-title="BDxtv"/group-title="RKDYIPTV"/g' $BODY_FILE
+          # Rename group titles
+          sed -i 's/group-title="BALL FTP"/group-title="RKDYIPTV"/Ig' $BODY_FILE
+          sed -i 's/group-title="BDxtv"/group-title="RKDYIPTV"/Ig' $BODY_FILE
+          sed -i 's/group-title="BDXTV"/group-title="RKDYIPTV"/Ig' $BODY_FILE
+
+          # Add missing logos
+          sed -i '/#EXTINF/ {/tvg-logo=/! s/#EXTINF:-1/#EXTINF:-1 tvg-logo="https:\/\/i.ibb.co\/VWVcf4t5\/RKDYIPTV.jpg"/}' $BODY_FILE
 
           # Combine redirect + playlist
           cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/Geo-plus/index.html
