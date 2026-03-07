@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Generate playlist
         run: |
@@ -24,30 +22,18 @@ jobs:
           BODY_FILE=body.m3u
           TEMP_FILE=temp.m3u
 
-          # Browser redirect
           echo '<!DOCTYPE html>' > $HTML_FILE
-          echo '<html>' >> $HTML_FILE
-          echo '<script>' >> $HTML_FILE
-          echo 'var ua = navigator.userAgent.toLowerCase();' >> $HTML_FILE
-          echo 'if (ua.includes("mozilla") || ua.includes("chrome") || ua.includes("safari") || ua.includes("firefox")) {' >> $HTML_FILE
-          echo 'window.location.href="https://telegram.me/rkdyiptv";' >> $HTML_FILE
-          echo '}' >> $HTML_FILE
-          echo '</script>' >> $HTML_FILE
-          echo '</html>' >> $HTML_FILE
+          echo '<html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' >> $HTML_FILE
 
-          # Playlist header
           echo '#EXTM3U' > $HEADER_FILE
           echo '# Credit: RKDYIPTV' >> $HEADER_FILE
           echo "#Updated $(date)" >> $HEADER_FILE
 
-          # Fetch CricHD playlist
           curl -L -s -o $TEMP_FILE "https://github.com/abusaeeidx/IPTV-Scraper-Zilla/raw/refs/heads/main/CricHD.m3u"
 
-          # Remove unwanted lines
           grep -v -E 'Abu SAEEID|Github @abusaeeidx|Update on|Note:' $TEMP_FILE > $BODY_FILE || true
 
-          # Add custom cricket channels
-          cat << 'EOF' >> $BODY_FILE
+          cat >> $BODY_FILE <<'EOF'
 #EXTINF:-1 tvg-id="starsports1hd.in" tvg-name="STAR SPORTS 1 ENGLISH HD" tvg-logo="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg" group-title="SPORTS",STAR SPORTS 1 ENGLISH HD
 https://yupptv.rkdyiptv.workers.dev/live/938.m3u8
 #EXTINF:-1 tvg-id="starsports1hdhindi.in" tvg-name="STAR SPORTS 1 HINDI HD" tvg-logo="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg" group-title="SPORTS",STAR SPORTS 1 HINDI HD
@@ -56,20 +42,9 @@ https://yupptv.rkdyiptv.workers.dev/live/2894.m3u8
 https://yupptv.rkdyiptv.workers.dev/live/939.m3u8
 #EXTINF:-1 tvg-id="starsports2hd.in" tvg-name="STAR SPORTS 2 HINDI HD" tvg-logo="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg" group-title="SPORTS",STAR SPORTS 2 HINDI HD
 https://yupptv.rkdyiptv.workers.dev/live/6828.m3u8
-#EXTINF:-1 tvg-id="No details available" tvg-name="WILLOW SPORTS HD" tvg-logo="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg" group-title="SPORTS",WILLOW SPORTS HD
-https://yupptv.rkdyiptv.workers.dev/live/6695.m3u8
-#EXTINF:-1 tvg-id="foxcricket.au" tvg-name="FOX CRICKET 4K*" tvg-logo="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg" group-title="SPORTS | CRICKET",FOX CRICKET 4K*
-https://yupptv.rkdyiptv.workers.dev/live/2756.m3u8
-#EXTINF:-1 tvg-id="astrocricket.my" tvg-name="ASTRO CRICKET 4K*" tvg-logo="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg" group-title="SPORTS | CRICKET",ASTRO CRICKET 4K*
-https://yupptv.rkdyiptv.workers.dev/live/2755.m3u8
-#EXTINF:-1 tvg-id="skysportscricket.uk" tvg-name="SKY SPORTS CRICKET 4K*" tvg-logo="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg" group-title="SPORTS | CRICKET",SKY SPORTS CRICKET 4K*
-https://yupptv.rkdyiptv.workers.dev/live/1981.m3u8
 EOF
 
-          # Combine HTML + playlist
           cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/Cricket.m3u/index.html
-
-          rm -f $HTML_FILE $HEADER_FILE $BODY_FILE $TEMP_FILE
 
       - name: Commit changes
         run: |
