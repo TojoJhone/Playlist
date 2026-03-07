@@ -20,7 +20,7 @@ jobs:
           HTML_FILE=html.txt
           HEADER_FILE=header.m3u
           BODY_FILE=body.m3u
-          TEMP_FILE=extender.m3u
+          EXTENDER_FILE=extender.m3u
           HOTSTAR_FILE=hotstar.m3u
 
           # Browser redirect
@@ -34,26 +34,26 @@ jobs:
           echo '</script>' >> $HTML_FILE
           echo '</html>' >> $HTML_FILE
 
-          # Playlist header
+          # Header
           echo '#EXTM3U' > $HEADER_FILE
           echo '# Credit: RKDYIPTV' >> $HEADER_FILE
           echo "#Updated $(date)" >> $HEADER_FILE
 
           # Fetch playlists
-          curl -L -s -o $TEMP_FILE "https://raw.githubusercontent.com/etcvai/ExtenderMax/refs/heads/main/iptv.m3u8"
+          curl -L -s -o $EXTENDER_FILE "https://raw.githubusercontent.com/etcvai/ExtenderMax/refs/heads/main/iptv.m3u8"
           curl -L -s -o $HOTSTAR_FILE "https://livetv-cb7.pages.dev/hotstar"
 
           # Filter ExtenderMax playlist
           awk '
           BEGIN{IGNORECASE=1}
-          /JIO TV|JIOTV\+|BALL FTP|BDXTV|CRICHD|SUN NXT|ZEE|MOVIES/ {
+          /group-title="JIO TV"|group-title="JIOTV\+ \(IND IP\)"|group-title="BALL FTP"|group-title="BDXTV"|group-title="BDxtv"|group-title="CRICHD"|group-title="SUN NXT"|group-title="ZEE"|group-title="MOVIES"/ {
               print
               getline
               print
           }
-          ' $TEMP_FILE > $BODY_FILE
+          ' $EXTENDER_FILE > $BODY_FILE
 
-          # Rename groups
+          # Rename group titles
           sed -i 's/group-title="JIOTV\+ (IND IP)"/group-title="JIO 2"/Ig' $BODY_FILE
           sed -i 's/group-title="BALL FTP"/group-title="RKDYIPTV"/Ig' $BODY_FILE
           sed -i 's/group-title="BDxtv"/group-title="RKDYIPTV"/Ig' $BODY_FILE
@@ -64,13 +64,11 @@ jobs:
           # Add missing logos
           sed -i '/#EXTINF/ {/tvg-logo=/! s/#EXTINF:-1/#EXTINF:-1 tvg-logo="https:\/\/i.ibb.co\/VWVcf4t5\/RKDYIPTV.jpg"/}' $BODY_FILE
 
-          # Add all Hotstar channels
+          # Add ALL Hotstar channels
           grep -v '^#EXTM3U' $HOTSTAR_FILE >> $BODY_FILE
 
           # Final playlist
           cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/Geo-plus.m3u/index.html
-
-          rm -f $HTML_FILE $HEADER_FILE $BODY_FILE $TEMP_FILE $HOTSTAR_FILE
 
       - name: Commit
         run: |
