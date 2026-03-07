@@ -1,4 +1,4 @@
-name: Extract VOD Playlist
+name: Extract MOVIES Playlist
 
 on:
   schedule:
@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  vod-playlist:
+  movies-playlist:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Generate VOD playlist
+      - name: Generate MOVIES playlist
         run: |
           mkdir -p Playlist/VOD
 
@@ -35,13 +35,14 @@ jobs:
           # Playlist header
           echo '#EXTM3U' > $HEADER_FILE
           echo '# Credit: RKDYIPTV' >> $HEADER_FILE
+          echo "#Updated $(date)" >> $HEADER_FILE
 
           # Fetch source playlist
           curl -L -s -o $TEMP_FILE "https://raw.githubusercontent.com/etcvai/ExtenderMax/refs/heads/main/iptv.m3u8"
 
-          # Extract VOD / Movies / Series
+          # Extract MOVIES category
           awk '
-          /group-title="Movies"|group-title="VOD"|group-title="Series"/ {print; getline; print}
+          /group-title="MOVIES"/ {print; getline; print}
           ' $TEMP_FILE > $BODY_FILE
 
           # Combine HTML + playlist
@@ -54,7 +55,7 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add Playlist/VOD/index.html
-          git commit -m "Update VOD playlist RKDYIPTV" || echo "No changes"
+          git commit -m "Update MOVIES playlist RKDYIPTV" || echo "No changes"
 
       - name: Push
         uses: ad-m/github-push-action@master
