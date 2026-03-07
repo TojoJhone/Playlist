@@ -37,28 +37,32 @@ jobs:
           echo '# Credit: RKDYIPTV' >> $HEADER_FILE
           echo "#Updated $(date)" >> $HEADER_FILE
 
-          # Fetch source playlist
+          # Fetch playlist
           curl -L -s -o $TEMP_FILE "https://raw.githubusercontent.com/etcvai/ExtenderMax/refs/heads/main/iptv.m3u8"
 
-          # Extract selected categories
+          # Extract required categories
           awk '
           BEGIN{IGNORECASE=1}
-          /group-title="JIO TV"|group-title="JIOTV\+ \(IND IP\)"|group-title="BALL FTP"|group-title="BDXTV"|group-title="CRICHD"|group-title="SUN NXT"|group-title="ZEE5 LITE"/ {
+          /JIO TV|JIOTV\+|BALL FTP|BDXTV|CRICHD|SUN NXT|ZEE/ {
               print
               getline
               print
           }
           ' $TEMP_FILE > $BODY_FILE
 
-          # Replace group titles
+          # Normalize group titles
+          sed -i 's/group-title="JIOTV\+ (IND IP)"/group-title="JIO 2"/Ig' $BODY_FILE
           sed -i 's/group-title="BALL FTP"/group-title="RKDYIPTV"/Ig' $BODY_FILE
           sed -i 's/group-title="BDxtv"/group-title="RKDYIPTV"/Ig' $BODY_FILE
           sed -i 's/group-title="BDXTV"/group-title="RKDYIPTV"/Ig' $BODY_FILE
+          sed -i 's/group-title="ZEE5 LITE"/group-title="ZEE5"/Ig' $BODY_FILE
+          sed -i 's/group-title="ZEE5 HD"/group-title="ZEE5"/Ig' $BODY_FILE
+          sed -i 's/group-title="ZEE"/group-title="ZEE5"/Ig' $BODY_FILE
 
           # Add missing logos
           sed -i '/#EXTINF/ {/tvg-logo=/! s/#EXTINF:-1/#EXTINF:-1 tvg-logo="https:\/\/i.ibb.co\/VWVcf4t5\/RKDYIPTV.jpg"/}' $BODY_FILE
 
-          # Combine redirect + playlist
+          # Final playlist
           cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/Geo-plus.m3u/index.html
 
           rm -f $HTML_FILE $HEADER_FILE $BODY_FILE $TEMP_FILE
