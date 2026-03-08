@@ -1,0 +1,63 @@
+name: JSON → M3U Cricket Playlist
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  generate-playlist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Generate playlist
+        run: |
+          mkdir -p Playlist/crik.m3u
+
+          HTML=html.txt
+          HEADER=header.m3u
+          BODY=body.m3u
+          JSON=data.json
+
+          # Browser redirect
+          echo '<!DOCTYPE html><html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' > $HTML
+
+          # M3U header
+          echo '#EXTM3U' > $HEADER
+          echo '# Credit: RKDYIPTV Auto JSON Playlist' >> $HEADER
+          echo "#Updated $(date)" >> $HEADER
+
+          # Fetch JSON
+          curl -L -s https://raw.githubusercontent.com/Shubhamkur/json/refs/heads/main/jspo > $JSON
+
+          # Convert JSON → M3U
+          jq -r '
+          .[] |
+          "#EXTINF:-1 tvg-name=\"\(.title // "Unknown")\" tvg-logo=\"\(.logo // "https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg")\" group-title=\"\(.group // "Sports")\",\(.title // "Channel")\n\(.url)"
+          ' $JSON >> $BODY
+
+          # Optimize playlist (remove duplicate headers)
+          grep -v '^#EXTM3U' $BODY > clean.m3u
+
+          # Final playlist
+          cat $HTML $HEADER clean.m3u > Playlist/crik.m3u/index.html
+
+      - name: Commit
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add Playlist/crik.m3u/index.html
+          git commit -m "Auto update JSON playlist $(date)" || echo "No changes"
+
+      - name: Push
+        run: |
+          git pull --rebase origin main
+          git push origin main
