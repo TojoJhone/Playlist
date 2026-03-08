@@ -28,7 +28,7 @@ jobs:
           JSON=data.json
           COOKIE=cookie.json
 
-          # Browser redirect
+          # Telegram redirect
           echo '<!DOCTYPE html><html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' > $HTML
 
           # Playlist header
@@ -40,7 +40,7 @@ jobs:
           curl -L -s https://allrounder-live.pages.dev/api/cookie.json > $COOKIE
           COOKIE_VALUE=$(jq -r '.cookie' $COOKIE)
 
-          # Fetch JSON source
+          # Fetch JSON
           curl -L -s https://raw.githubusercontent.com/Shubhamkur/json/refs/heads/main/jspo > $JSON
 
           # Convert JSON → M3U
@@ -49,11 +49,7 @@ jobs:
           "#EXTINF:-1 tvg-id=\"\(.id // "0")\" tvg-name=\"\(.title // "Channel")\" tvg-logo=\"\(.logo // "https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg")\" group-title=\"\(.group // "Sports")\",\(.title // "Channel")\n#KODIPROP:inputstream.adaptive.license_type=clearkey\n#KODIPROP:inputstream.adaptive.license_key=\(.license // "")\n#EXTVLCOPT:http-user-agent=billatvoriginals\n#EXTHTTP:{ \"cookie\":\"\($cookie)\" }\n\(.url)"
           ' $JSON >> $BODY
 
-          # Remove duplicate header
-          grep -v '^#EXTM3U' $BODY > clean.m3u
-
-          # Final playlist
-          cat $HTML $HEADER clean.m3u > Playlist/crik.m3u/index.html
+          cat $HTML $HEADER $BODY > Playlist/crik.m3u/index.html
 
       - name: Commit playlist
         run: |
