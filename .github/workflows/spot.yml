@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Generate playlist
         run: |
@@ -25,35 +23,37 @@ jobs:
           TEMP=temp.m3u
           HOTSTAR=hotstar.m3u
 
-          # Telegram redirect for browser
+          # Telegram redirect
           echo '<!DOCTYPE html><html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' > $HTML
 
-          # Playlist header
           echo '#EXTM3U' > $HEADER
           echo '# Credit: RKDYIPTV' >> $HEADER
 
-          # Fetch CricHD playlist
+          # CricHD playlist
           curl -L -s https://github.com/abusaeeidx/IPTV-Scraper-Zilla/raw/refs/heads/main/CricHD.m3u > $TEMP
 
-          # Remove unwanted lines
           grep -v -E "Abu SAEEID|Github @abusaeeidx|Update on|Note:" $TEMP >> $BODY
 
-          # Fetch Hotstar playlist
+          # Hotstar playlist
           curl -L -s https://livetv-cb7.pages.dev/hotstar > $HOTSTAR
 
-          # Filter only Star Sports 1 & 2
+          # Filter group-title Sports
           awk '
-          /Star Sports 1|STAR SPORTS 1|Star Sports 2|STAR SPORTS 2/ {print; getline; print}
+          BEGIN{IGNORECASE=1}
+          /group-title="sports"/ {
+          print
+          getline
+          print
+          }
           ' $HOTSTAR >> $BODY
 
-          # Add custom channels
+          # Custom channels
           echo '#EXTINF:-1 tvg-name="STAR SPORTS 1 ENGLISH HD" tvg-logo="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg" group-title="SPORTS",STAR SPORTS 1 ENGLISH HD' >> $BODY
           echo 'https://yupptv.rkdyiptv.workers.dev/live/938.m3u8' >> $BODY
 
           echo '#EXTINF:-1 tvg-name="STAR SPORTS 1 HINDI HD" tvg-logo="https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg" group-title="SPORTS",STAR SPORTS 1 HINDI HD' >> $BODY
           echo 'https://yupptv.rkdyiptv.workers.dev/live/2894.m3u8' >> $BODY
 
-          # Final playlist
           cat $HTML $HEADER $BODY > Playlist/Cricket.m3u/index.html
 
       - name: Commit
