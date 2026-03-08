@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+</head>
+<body>
+<script>
+window.location.href = "https://telegram.me/rkdyiptv";
+</script>
+</html>
+<noscript>
+</noscript>
+
+<script>
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+document.onkeydown = function(e) {
+    if (
+        e.keyCode == 123 || 
+        (e.ctrlKey && e.shiftKey && e.keyCode == 73) ||
+        (e.ctrlKey && e.shiftKey && e.keyCode == 74) ||
+        (e.ctrlKey && e.keyCode == 85) ||
+        (e.ctrlKey && e.keyCode == 83)
+    ) {
+        return false;
+    }
+};
+
+setInterval(function(){
+    debugger;
+}, 1000);
+</script>
+
+#KODIPROP:inputstreamaddon=inputstream.adaptive
+#KODIPROP:inputstream.adaptive.manifest_type=dash
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36
+#KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey
+#KODIPROP:inputstream.adaptive.license_key=9909e33838e1152cc512c4636f513f8f:02f67060c94bcc3307280f505ad508ab
+#EXTINF:-1 tvg-id="AstroCricket" tvg-name="Astro Cricket HD" group-title="Sports" tvg-logo="https://iili.io/1Nz0AP.png", WORLD CUP HINDI
+https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/nn1qrdjaha/out/v1/bc4fa7d9cebf47858bebf14ad589025e/cenc.mpd
+
+
+
+#KODIPROP:inputstreamaddon=inputstream.adaptive
+#KODIPROP:inputstream.adaptive.manifest_type=dash
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36
+#KODIPROP:inputstream.adaptive.license_type=org.w3.clearkey
+#KODIPROP:inputstream.adaptive.license_key=470a5bda0ae8965c3ab4004c302bc1c8:b04888df6ed570c9435b97471504bd9b
+#EXTINF:-1 tvg-id="AstroCricket" tvg-name="Astro Cricket HD" group-title="Sports" tvg-logo="https://iili.io/1Nz0AP.png", WORLDCUP ENG
+https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/lz7yhtgbjb/out/v1/bedaa948e7a24dc0b5fd5d7b38534d8c/cenc.mpd
