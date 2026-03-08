@@ -46,10 +46,15 @@ jobs:
           # Convert JSON → M3U
           jq -r --arg cookie "$COOKIE_VALUE" '
           .[] |
-          "#EXTINF:-1 tvg-id=\"\(.id // "0")\" tvg-name=\"\(.title // "Channel")\" tvg-logo=\"\(.logo // "https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg")\" group-title=\"\(.group // "Sports")\",\(.title // "Channel")\n#KODIPROP:inputstream.adaptive.license_type=clearkey\n#KODIPROP:inputstream.adaptive.license_key=\(.license // "")\n#EXTVLCOPT:http-user-agent=billatvoriginals\n#EXTHTTP:{ \"cookie\":\"\($cookie)\" }\n\(.url)"
+          select(.url != null) |
+          "#EXTINF:-1 tvg-id=\"\(.id // "0")\" tvg-name=\"\(.title // "Channel")\" tvg-logo=\"\(.logo // "https://i.ibb.co/VWVcf4t5/RKDYIPTV.jpg")\" group-title=\"\(.group // "Sports")\",\(.title // "Channel")\n#KODIPROP:inputstream.adaptive.license_type=clearkey\n#KODIPROP:inputstream.adaptive.license_key=\(.keyId // ""):\(.key // "")\n#EXTVLCOPT:http-user-agent=billatvoriginals\n#EXTHTTP:{ \"cookie\":\"\($cookie)\" }\n\(.url)"
           ' $JSON >> $BODY
 
-          cat $HTML $HEADER $BODY > Playlist/crik.m3u/index.html
+          # Remove duplicate header
+          grep -v '^#EXTM3U' $BODY > clean.m3u
+
+          # Final playlist
+          cat $HTML $HEADER clean.m3u > Playlist/crik.m3u/index.html
 
       - name: Commit playlist
         run: |
