@@ -15,7 +15,7 @@ jobs:
 
       - name: Generate playlist
         run: |
-          mkdir -p Playlist/Geo-plus.m3u
+          mkdir -p Playlist/Geo-plussss.m3u
 
           HTML_FILE=html.txt
           HEADER_FILE=header.m3u
@@ -68,14 +68,14 @@ jobs:
           grep -v '^#EXTM3U' $HOTSTAR_FILE >> $BODY_FILE
 
           # Final playlist
-          cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/Geo-plus.m3u/index.html
+          cat $HTML_FILE $HEADER_FILE $BODY_FILE > Playlist/Geo-plussss.m3u/index.html
 
       - name: Commit
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add Playlist/Geo-plus.m3u/index.html
-          git commit -m "Update Geo-plus playlist RKDYIPTV" || echo "No changes"
+          git add Playlist/Geo-plussss.m3u/index.html
+          git commit -m "Update Geo-plussss playlist RKDYIPTV" || echo "No changes"
 
       - name: Push
         run: |
