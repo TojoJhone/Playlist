@@ -1,4 +1,4 @@
-name: Update Cricket Playlist
+name: spot Update Cricket Playlist
 
 on:
   schedule:
@@ -22,6 +22,9 @@ jobs:
 
       - name: Generate playlist
         run: |
+
+          # Clean old folder (fix error)
+          rm -rf Playlist/Cricket.m3u
           mkdir -p Playlist/Cricket.m3u
 
           HTML=html.txt
@@ -38,11 +41,13 @@ jobs:
           echo '# Credit: RKDYIPTV Cricket Playlist' >> $HEADER
           echo "#Updated $(date)" >> $HEADER
 
-          # Fetch playlist 1 (Secret)
+          # Fetch playlist 1 (secret)
           curl -L -s "$SRC1" > $TEMP
+
+          # Remove unwanted lines
           grep -v -E "Abu SAEEID|Github @abusaeeidx|Update on|Note:" $TEMP >> $BODY
 
-          # Fetch playlist 2 (Secret)
+          # Fetch playlist 2 (secret)
           curl -L -s "$SRC2" > $HOTSTAR
 
           # Filter Sports group
@@ -55,7 +60,7 @@ jobs:
           }
           ' $HOTSTAR >> $BODY
 
-          # Star Sports auto detect
+          # Auto detect Star Sports
           awk '
           BEGIN{IGNORECASE=1}
           /star.?sports/ {
@@ -65,7 +70,7 @@ jobs:
           }
           ' $HOTSTAR >> $BODY
 
-          # Fetch playlist 3 (Secret)
+          # Fetch playlist 3 (secret)
           curl -L -s "$SRC3" >> $BODY
 
           # Remove duplicate headers
