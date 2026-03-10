@@ -1,42 +1,116 @@
 name: Update Cricket Playlist
+
 on:
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
-env:
-  SRC1: ${{ secrets.SOURCE_PLAYLIST1 }}
-  SRC2: ${{ secrets.SOURCE_PLAYLIST2 }}
-  SRC3: ${{ secrets.SOURCE_PLAYLIST3 }}
+
 jobs:
   update-playlist:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Generate playlist
         run: |
-          set +e
-          mkdir -p "Playlist/Cricket.m3u"
-          WORKDIR="Playlist/Cricket.m3u"
-          echo '#EXTM3U' > /tmp/output.m3u
-          echo '# Credit: RKDYIPTV Cricket Playlist' >> /tmp/output.m3u
-          echo "#Updated $(date)" >> /tmp/output.m3u
-          curl -L -s --max-redirs 10 --retry 3 \
-            -H "User-Agent: Mozilla/5.0" \
-            "$SRC1" | grep -v -E "Abu SAEEID|Github @abusaeeidx|Update on|Note:|#EXTM3U" >> /tmp/output.m3u
-          curl -L -s --max-redirs 10 --retry 3 \
-            -H "User-Agent: Mozilla/5.0" \
-            "$SRC2" | grep -v '^#EXTM3U' >> /tmp/output.m3u
-          curl -L -s --max-redirs 10 --retry 3 \
-            -H "User-Agent: Mozilla/5.0" \
-            "$SRC3" | grep -v '^#EXTM3U' >> /tmp/output.m3u
-          echo '<!DOCTYPE html><html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' > /tmp/html.txt
-          cat /tmp/html.txt /tmp/output.m3u > "$WORKDIR/index.html"
-      - name: Commit
+
+          mkdir -p Playlist/Cricket.m3u
+
+          HTML=html.txt
+          HEADER=header.m3u
+          TEMP=temp.m3u
+          HOTSTAR=hotstar.m3u
+          SPORTAPI=sportsapi.m3u
+          BODY=body.m3u
+
+          # Telegram redirect
+          echo '<!DOCTYPE html><html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' > $HTML
+
+          # Playlist header
+          echo '#EXTM3U' > $HEADER
+          echo '# Credit: RKDYIPTV Cricket Playlist' >> $HEADER
+          echo "#Updated $(date)" >> $HEADER
+
+          #################################
+          # CricHD Playlist
+          #################################
+
+          curl -L -s https://github.com/abusaeeidx/IPTV-Scraper-Zilla/raw/refs/heads/main/CricHD.m3u > $TEMP
+
+          grep -v -E "Abu SAEEID|Github @abusaeeidx|Update on|Note:" $TEMP >> $BODY
+
+
+          #################################
+          # Hotstar Playlist
+          #################################
+
+          curl -L -s https://livetv-cb7.pages.dev/hotstar > $HOTSTAR
+
+          awk '
+          BEGIN{IGNORECASE=1}
+          /group-title="sports"/ {
+          print
+          getline
+          print
+          }
+          ' $HOTSTAR >> $BODY
+
+
+          #################################
+          # Star Sports detection
+          #################################
+
+          awk '
+          BEGIN{IGNORECASE=1}
+          /star.?sports/ {
+          print
+          getline
+          print
+          }
+          ' $HOTSTAR >> $BODY
+
+
+          #################################
+          # My Sports API Playlist
+          #################################
+
+          curl -L -s https://my-sports-api.vercel.app > $SPORTAPI
+
+          awk '
+          BEGIN{IGNORECASE=1}
+          /sports|cricket|star|ten|willow|sky.?sports/ {
+          print
+          getline
+          print
+          }
+          ' $SPORTAPI >> $BODY
+
+
+          #################################
+          # Clean Playlist
+          #################################
+
+          grep -v '^#EXTM3U' $BODY | awk '!seen[$0]++' > clean.m3u
+
+
+          #################################
+          # Final Playlist
+          #################################
+
+          cat $HTML $HEADER clean.m3u > Playlist/Cricket.m3u/index.html
+
+      - name: Commit changes
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add .
+          git add Playlist/Cricket.m3u/index.html
           git commit -m "Update Cricket playlist $(date)" || echo "No changes"
-      - name: Push
-        run: git push
+
+      - name: Push changes
+        run: |
+          git pull --rebase origin main
+          git push origin main
