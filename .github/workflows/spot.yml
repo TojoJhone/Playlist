@@ -21,42 +21,35 @@ jobs:
       - name: Generate playlist
         run: |
 
+          mkdir -p Playlist/Cricket
+
           HTML=html.txt
           HEADER=header.m3u
           BODY=body.m3u
           TEMP=temp.m3u
           HOTSTAR=hotstar.m3u
 
-          # ensure folder exists
-          mkdir -p Playlist/Cricket.m3u
-
-          # Telegram redirect
           echo '<!DOCTYPE html><html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' > $HTML
 
-          # Playlist header
           echo '#EXTM3U' > $HEADER
           echo '# Credit: RKDYIPTV Cricket Playlist' >> $HEADER
           echo "#Updated $(date)" >> $HEADER
 
-          # Fetch playlist 1
           curl -L -s "$SRC1" > $TEMP
 
           grep -v -E "Abu SAEEID|Github @abusaeeidx|Update on|Note:" $TEMP >> $BODY
 
-          # Fetch playlist 2
           curl -L -s "$SRC2" > $HOTSTAR
 
           awk 'BEGIN{IGNORECASE=1}/group-title="sports"/{print;getline;print}' $HOTSTAR >> $BODY
 
           awk 'BEGIN{IGNORECASE=1}/star.?sports/{print;getline;print}' $HOTSTAR >> $BODY
 
-          # Fetch playlist 3
           curl -L -s "$SRC3" >> $BODY
 
           grep -v '^#EXTM3U' $BODY > clean.m3u
 
-          # overwrite playlist
-          cat $HTML $HEADER clean.m3u > Playlist/Cricket.m3u/index.html
+          cat $HTML $HEADER clean.m3u > Playlist/Cricket/index.html
 
       - name: Commit changes
         run: |
