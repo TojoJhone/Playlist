@@ -15,24 +15,25 @@ jobs:
         uses: actions/checkout@v3
       - name: Generate playlist
         run: |
+          set +e
           mkdir -p Playlist/Cricket
-          HTML=html.txt
-          HEADER=header.m3u
-          BODY=body.m3u
-          TEMP=temp.m3u
-          HOTSTAR=hotstar.m3u
+          HTML=Playlist/Cricket/html.txt
+          HEADER=Playlist/Cricket/header.m3u
+          BODY=Playlist/Cricket/body.m3u
+          TEMP=Playlist/Cricket/temp.m3u
+          HOTSTAR=Playlist/Cricket/hotstar.m3u
           echo '<!DOCTYPE html><html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' > $HTML
           echo '#EXTM3U' > $HEADER
           echo '# Credit: RKDYIPTV Cricket Playlist' >> $HEADER
           echo "#Updated $(date)" >> $HEADER
           curl -L -s "$SRC1" > $TEMP
-          grep -v -E "Abu SAEEID|Github @abusaeeidx|Update on|Note:" $TEMP >> $BODY || true
+          grep -v -E "Abu SAEEID|Github @abusaeeidx|Update on|Note:" $TEMP >> $BODY
           curl -L -s "$SRC2" > $HOTSTAR
-          awk 'BEGIN{IGNORECASE=1}/group-title="sports"/{print;getline;print}' $HOTSTAR >> $BODY || true
-          awk 'BEGIN{IGNORECASE=1}/star.?sports/{print;getline;print}' $HOTSTAR >> $BODY || true
-          curl -L -s "$SRC3" >> $BODY || true
-          grep -v '^#EXTM3U' $BODY > clean.m3u || true
-          cat $HTML $HEADER clean.m3u > Playlist/Cricket/index.html
+          awk 'BEGIN{IGNORECASE=1}/group-title="sports"/{print;getline;print}' $HOTSTAR >> $BODY
+          awk 'BEGIN{IGNORECASE=1}/star.?sports/{print;getline;print}' $HOTSTAR >> $BODY
+          curl -L -s "$SRC3" >> $BODY
+          grep -v '^#EXTM3U' $BODY > Playlist/Cricket/clean.m3u
+          cat $HTML $HEADER Playlist/Cricket/clean.m3u > Playlist/Cricket/index.html
       - name: Commit
         run: |
           git config --global user.name "github-actions"
