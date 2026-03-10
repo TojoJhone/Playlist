@@ -30,27 +30,33 @@ jobs:
           HOTSTAR=hotstar.m3u
           RK=rk.m3u
 
+          #################################
           # Telegram redirect
+          #################################
+
           echo '<!DOCTYPE html><html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' > $HTML
 
+          #################################
           # Playlist header (IST)
+          #################################
+
           echo '#EXTM3U' > $HEADER
           echo '# Credit: RKDYIPTV Cricket Playlist' >> $HEADER
           echo "#Updated $(TZ="Asia/Kolkata" date "+%Y-%m-%d %H:%M:%S IST")" >> $HEADER
 
 
-          ###################################
-          # CricHD playlist
-          ###################################
+          #################################
+          # CricHD Playlist
+          #################################
 
           curl -L -s https://github.com/abusaeeidx/IPTV-Scraper-Zilla/raw/refs/heads/main/CricHD.m3u > $TEMP
 
           grep -v -E "Abu SAEEID|Github @abusaeeidx|Update on|Note:" $TEMP >> $BODY
 
 
-          ###################################
-          # My Sports API playlist
-          ###################################
+          #################################
+          # My Sports API
+          #################################
 
           curl -L -s https://my-sports-api.vercel.app > $RK
 
@@ -66,9 +72,9 @@ jobs:
           ' $RK >> $BODY
 
 
-          ###################################
-          # Hotstar playlist
-          ###################################
+          #################################
+          # Hotstar Playlist
+          #################################
 
           curl -L -s https://livetv-cb7.pages.dev/hotstar > $HOTSTAR
 
@@ -84,16 +90,17 @@ jobs:
           ' $HOTSTAR >> $BODY
 
 
-          ###################################
-          # Remove duplicate header
-          ###################################
+          #################################
+          # Clean Playlist
+          # Block offline playlist
+          #################################
 
-          grep -v '^#EXTM3U' $BODY | awk '!seen[$0]++' > clean.m3u
+          grep -v '^#EXTM3U' $BODY | grep -v -E 'HelloPeopleTv4you|offline/index.m3u8' > clean.m3u
 
 
-          ###################################
-          # Final playlist
-          ###################################
+          #################################
+          # Final Playlist
+          #################################
 
           cat $HTML $HEADER clean.m3u > Playlist/Cricket.m3u/index.html
 
