@@ -1,4 +1,4 @@
-name: spot Update Cricket Playlist
+name: Update Cricket Playlist
 
 on:
   schedule:
