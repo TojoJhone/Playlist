@@ -21,25 +21,17 @@ jobs:
           echo '#EXTM3U' > /tmp/output.m3u
           echo '# Credit: RKDYIPTV Cricket Playlist' >> /tmp/output.m3u
           echo "#Updated $(date)" >> /tmp/output.m3u
-          curl -L -s --max-redirs 10 --retry 3 --retry-delay 2 \
-            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
+          curl -L -s --max-redirs 10 --retry 3 \
+            -H "User-Agent: Mozilla/5.0" \
             "$SRC1" | grep -v -E "Abu SAEEID|Github @abusaeeidx|Update on|Note:|#EXTM3U" >> /tmp/output.m3u
-          curl -L -s --max-redirs 10 --retry 3 --retry-delay 2 \
-            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
-            "$SRC2" | awk 'BEGIN{IGNORECASE=1}/group-title="sports"/{print;getline;print}' >> /tmp/output.m3u
-          curl -L -s --max-redirs 10 --retry 3 --retry-delay 2 \
-            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
-            "$SRC2" | awk 'BEGIN{IGNORECASE=1}/star.?sports/{print;getline;print}' >> /tmp/output.m3u
-          curl -L -s --max-redirs 10 --retry 3 --retry-delay 2 \
-            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" \
+          curl -L -s --max-redirs 10 --retry 3 \
+            -H "User-Agent: Mozilla/5.0" \
+            "$SRC2" | grep -v '^#EXTM3U' >> /tmp/output.m3u
+          curl -L -s --max-redirs 10 --retry 3 \
+            -H "User-Agent: Mozilla/5.0" \
             "$SRC3" | grep -v '^#EXTM3U' >> /tmp/output.m3u
-          cp /tmp/output.m3u "$WORKDIR/index.html"
-      - name: Debug - Check output
-        run: |
-          echo "=== File size ==="
-          wc -l Playlist/Cricket.m3u/index.html
-          echo "=== First 20 lines ==="
-          head -20 Playlist/Cricket.m3u/index.html
+          echo '<!DOCTYPE html><html><script>window.location.href="https://telegram.me/rkdyiptv";</script></html>' > /tmp/html.txt
+          cat /tmp/html.txt /tmp/output.m3u > "$WORKDIR/index.html"
       - name: Commit
         run: |
           git config --global user.name "github-actions"
