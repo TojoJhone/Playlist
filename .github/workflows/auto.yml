@@ -22,6 +22,7 @@ jobs:
           BODY_FILE=body.m3u
           EXTENDER_FILE=extender.m3u
           HOTSTAR_FILE=hotstar.m3u
+          RK_FILE=rk.m3u
 
           # Browser redirect
           echo '<!DOCTYPE html>' > $HTML_FILE
@@ -40,6 +41,7 @@ jobs:
           echo "#Updated $(date)" >> $HEADER_FILE
 
           # Fetch playlists
+          curl -L -s -o $RK_FILE "https://github.com/alex4528x/m3u/raw/refs/heads/main/jtv.m3u"
           curl -L -s -o $EXTENDER_FILE "https://raw.githubusercontent.com/etcvai/ExtenderMax/refs/heads/main/iptv.m3u8"
           curl -L -s -o $HOTSTAR_FILE "https://livetv-cb7.pages.dev/hotstar"
 
